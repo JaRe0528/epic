@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ pelicula.titulo }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('cartelera') }}">Cartelera</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ pelicula.titulo }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <img src="{{ pelicula.imagen_url }}" class="img-fluid rounded shadow" alt="{{ pelicula.titulo }}">
+    </div>
+    <div class="col-md-8">
+        <h1 class="display-5">{{ pelicula.titulo }}</h1>
+        
+        <div class="mb-3">
+            <span class="badge bg-{{ 'success' if pelicula.clasificacion == 'A' else 'warning' if pelicula.clasificacion == 'B' else 'danger' if pelicula.clasificacion == 'C' else 'info' }} me-2">
+                {{ pelicula.clasificacion }}
+            </span>
+            <span class="badge bg-primary me-2">{{ pelicula.estado }}</span>
+            <span class="badge bg-secondary me-2">{{ pelicula.categoria }}</span>
+            <span class="badge bg-info">{{ pelicula.idioma }}</span>
+        </div>
+        
+        <p><i class="bi bi-clock"></i> <strong>Duración:</strong> {{ pelicula.duracion }}</p>
+        <p><i class="bi bi-calendar-event"></i> <strong>Horarios:</strong> {{ pelicula.horarios }}</p>
+        <p><i class="bi bi-building"></i> <strong>Sala:</strong> {{ pelicula.sala }}</p>
+        <p><i class="bi bi-person"></i> <strong>Director:</strong> {{ pelicula.director }}</p>
+        
+        <h4 class="mt-4">Sinopsis</h4>
+        <p class="lead">{{ pelicula.sinopsis }}</p>
+        
+        <div class="mt-4">
+            <h4>Tráiler</h4>
+            {% if pelicula.trailer_url %}
+                {# Extraer el ID del video de YouTube de diferentes formatos de URL #}
+                {% set youtube_url = pelicula.trailer_url %}
+                {% set youtube_id = None %}
+                
+                {% if 'youtube.com/watch?v=' in youtube_url %}
+                    {% set youtube_id = youtube_url.split('v=')[1].split('&')[0] %}
+                {% elif 'youtu.be/' in youtube_url %}
+                    {% set youtube_id = youtube_url.split('youtu.be/')[1].split('?')[0] %}
+                {% elif 'youtube.com/embed/' in youtube_url %}
+                    {% set youtube_id = youtube_url.split('embed/')[1].split('?')[0] %}
+                {% endif %}
+                
+                {% if youtube_id %}
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/{{ youtube_id }}?rel=0" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                class="rounded shadow"></iframe>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <p>Formato de URL no reconocido. Por favor verifica que la URL sea de YouTube.</p>
+                        <a href="{{ pelicula.trailer_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Ver en YouTube
+                        </a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    No hay tráiler disponible para esta película.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Cartelera{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4 text-center">Cartelera</h1>
+    </div>
+</div>
+
+<div class="row">
+    {% for pelicula in peliculas %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow">
+            <div class="row g-0 h-100">
+                <div class="col-md-4">
+                    <a href="{{ url_for('pelicula', id=pelicula.id) }}">
+                        <img src="{{ pelicula.imagen_url }}" class="img-fluid rounded-start h-100 w-100" style="object-fit: cover;" alt="{{ pelicula.titulo }}">
+                    </a>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pelicula.titulo }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> {{ pelicula.duracion }} |
+                                <span class="badge bg-{{ 'success' if pelicula.clasificacion == 'A' else 'warning' if pelicula.clasificacion == 'B' else 'danger' if pelicula.clasificacion == 'C' else 'info' }}">
+                                    {{ pelicula.clasificacion }}
+                                </span> |
+                                <i class="bi bi-film"></i> {{ pelicula.categoria }} |
+                                <i class="bi bi-translate"></i> {{ pelicula.idioma }}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <span class="badge bg-{{ 'primary' if pelicula.estado == 'En cartelera' else 'secondary' if pelicula.estado == 'Próximamente' else 'info' }}">
+                                {{ pelicula.estado }}
+                            </span>
+                        </p>
+                        <p class="card-text">
+                            <i class="bi bi-clock-history"></i> Horarios: {{ pelicula.horarios }}
+                        </p>
+                        <a href="{{ url_for('pelicula', id=pelicula.id) }}" class="btn btn-outline-primary">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

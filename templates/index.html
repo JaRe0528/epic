@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Inicio - Cine Épico{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-dark text-white py-5 mb-5" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://via.placeholder.com/1920x1080') no-repeat center center; background-size: cover;">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4">Bienvenido a <span class="text-danger">Cine Épico</span></h1>
+                <p class="lead mb-4">La mejor experiencia cinematográfica en la ciudad. Disfruta de los últimos estrenos en nuestras modernas salas con la mejor calidad de imagen y sonido.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('cartelera') }}" class="btn btn-danger btn-lg px-4">Ver Cartelera</a>
+                    {% if not session.logged_in %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Acceso Admin</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Próximos Estrenos -->
+<section class="mb-5">
+    <div class="container">
+        <h2 class="text-center mb-5 display-4">Próximos Estrenos</h2>
+        
+        <div class="row">
+            {% for pelicula in proximas_estrenos %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow">
+                    <img src="{{ pelicula.imagen_url }}" class="card-img-top" alt="{{ pelicula.titulo }}" style="height: 400px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pelicula.titulo }}</h5>
+                        <p class="card-text">
+                            <span class="badge bg-secondary me-2">{{ pelicula.estado }}</span>
+                            <span class="badge bg-{{ 'success' if pelicula.clasificacion == 'A' else 'warning' if pelicula.clasificacion == 'B' else 'danger' if pelicula.clasificacion == 'C' else 'info' }}">
+                                {{ pelicula.clasificacion }}
+                            </span>
+                        </p>
+                        <p class="card-text"><small class="text-muted">Estreno: {{ pelicula.created_at.strftime('%d/%m/%Y') }}</small></p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{{ url_for('pelicula', id=pelicula.id) }}" class="btn btn-sm btn-outline-danger">Más información</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Películas en Cartelera -->
+<section class="mb-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="display-4">En Cartelera</h2>
+            <a href="{{ url_for('cartelera') }}" class="btn btn-outline-danger">Ver todas</a>
+        </div>
+        
+        <div class="row">
+            {% for pelicula in en_cartelera %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <a href="{{ url_for('pelicula', id=pelicula.id) }}">
+                        <img src="{{ pelicula.imagen_url }}" class="card-img-top" alt="{{ pelicula.titulo }}" style="height: 300px; object-fit: cover;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pelicula.titulo }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> {{ pelicula.duracion }} | 
+                                <span class="badge bg-{{ 'success' if pelicula.clasificacion == 'A' else 'warning' if pelicula.clasificacion == 'B' else 'danger' if pelicula.clasificacion == 'C' else 'info' }}">
+                                    {{ pelicula.clasificacion }}
+                                </span>
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{{ url_for('pelicula', id=pelicula.id) }}" class="btn btn-sm btn-danger w-100">Ver horarios</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Nuestras Salas -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 display-4">Nuestras Salas</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-camera-reels fs-1 text-danger mb-3"></i>
+                        <h3 class="h4">Sala Premium</h3>
+                        <p class="card-text">Asientos reclinables, servicio a butaca y la mejor calidad de imagen 4K.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-soundwave fs-1 text-danger mb-3"></i>
+                        <h3 class="h4">Sonido Dolby Atmos</h3>
+                        <p class="card-text">Experiencia de sonido envolvente que te transporta dentro de la película.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-joystick fs-1 text-danger mb-3"></i>
+                        <h3 class="h4">Sala 3D</h3>
+                        <p class="card-text">Vive la experiencia tridimensional con nuestros lentes activos de última generación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Promociones -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 display-4">Promociones Especiales</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card bg-dark text-white">
+                    <img src="https://via.placeholder.com/800x400" class="card-img" alt="Promoción 1" style="opacity: 0.4; height: 250px; object-fit: cover;">
+                    <div class="card-img-overlay d-flex flex-column justify-content-center">
+                        <h3 class="card-title">Martes de Descuento</h3>
+                        <p class="card-text">Todos los martes disfruta de un 30% de descuento en todas las funciones.</p>
+                        <p class="card-text"><small>Válido solo en taquilla física</small></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark text-white">
+                    <img src="https://via.placeholder.com/800x400" class="card-img" alt="Promoción 2" style="opacity: 0.4; height: 250px; object-fit: cover;">
+                    <div class="card-img-overlay d-flex flex-column justify-content-center">
+                        <h3 class="card-title">Combo Familiar</h3>
+                        <p class="card-text">2 entradas + 2 bebidas grandes + 1 palomitas gigantes por solo $299.</p>
+                        <p class="card-text"><small>Válido de lunes a jueves</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

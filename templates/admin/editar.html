@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if pelicula else 'Nueva' }} Película{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>{{ 'Editar' if pelicula else 'Nueva' }} Película</h1>
+    </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" 
+                       value="{{ pelicula.titulo if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="duracion" class="form-label">Duración</label>
+                <input type="text" class="form-control" id="duracion" name="duracion" 
+                       value="{{ pelicula.duracion if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="clasificacion" class="form-label">Clasificación</label>
+                <select class="form-select" id="clasificacion" name="clasificacion" required>
+                    <option value="A" {{ 'selected' if pelicula and pelicula.clasificacion == 'A' }}>A: Para todo público</option>
+                    <option value="B" {{ 'selected' if pelicula and pelicula.clasificacion == 'B' }}>B: Para adolescentes de 12 años en adelante</option>
+                    <option value="B15" {{ 'selected' if pelicula and pelicula.clasificacion == 'B15' }}>B15: No recomendada para menores de 15 años</option>
+                    <option value="C" {{ 'selected' if pelicula and pelicula.clasificacion == 'C' }}>C: Para adultos de 18 años en adelante</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Categoría (Género)</label>
+                <input type="text" class="form-control" id="categoria" name="categoria" 
+                       value="{{ pelicula.categoria if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" id="estado" name="estado" required>
+                    <option value="En cartelera" {{ 'selected' if pelicula and pelicula.estado == 'En cartelera' }}>En cartelera</option>
+                    <option value="Próximamente" {{ 'selected' if pelicula and pelicula.estado == 'Próximamente' }}>Próximamente</option>
+                    <option value="Estrenos" {{ 'selected' if pelicula and pelicula.estado == 'Estrenos' }}>Estrenos</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="idioma" class="form-label">Idioma</label>
+                <input type="text" class="form-control" id="idioma" name="idioma" 
+                       value="{{ pelicula.idioma if pelicula }}" required>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="horarios" class="form-label">Horarios (separados por comas)</label>
+                <input type="text" class="form-control" id="horarios" name="horarios" 
+                       value="{{ pelicula.horarios if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="sala" class="form-label">Sala</label>
+                <select class="form-select" id="sala" name="sala" required>
+                    {% for i in range(1, 7) %}
+                        <option value="Sala {{ i }}" {{ 'selected' if pelicula and pelicula.sala == 'Sala ' + i|string }}>
+                            Sala {{ i }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="director" class="form-label">Director</label>
+                <input type="text" class="form-control" id="director" name="director" 
+                       value="{{ pelicula.director if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="trailer_url" class="form-label">URL del Tráiler (YouTube)</label>
+                <input type="url" class="form-control" id="trailer_url" name="trailer_url" 
+                       value="{{ pelicula.trailer_url if pelicula }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="sinopsis" class="form-label">Sinopsis</label>
+                <textarea class="form-control" id="sinopsis" name="sinopsis" rows="3" required>{{ pelicula.sinopsis if pelicula }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="imagen" class="form-label">Imagen de la Película</label>
+                <input class="form-control" type="file" id="imagen" name="imagen" {{ 'required' if not pelicula }}>
+                {% if pelicula %}
+                    <small class="text-muted">Dejar en blanco para mantener la imagen actual</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+        <a href="{{ url_for('admin_peliculas') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+</form>
+{% endblock %}
